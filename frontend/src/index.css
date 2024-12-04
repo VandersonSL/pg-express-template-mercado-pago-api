@@ -1,88 +1,61 @@
-body {
-  margin: 0;
-  padding: 0;
-  font-family: Arial, sans-serif;
-}
-
-.payment-test-container {
-  max-width: 600px;
-  margin: 2rem auto;
-  padding: 2rem;
-  background: white;
+.payment-container {
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #f9f9f9;
   border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
 }
 
-.payment-test-container form div {
-  margin-bottom: 1rem;
+.payment-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
 }
 
-.payment-test-container input {
-  width: 100%;
-  padding: 0.5rem;
-  margin-top: 0.25rem;
+.form-group {
+  display: flex;
+  flex-direction: column;
 }
 
-.payment-test-container button {
-  background: #009ee3;
+.form-group label {
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.form-group input {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.btn-submit {
+  padding: 10px;
+  background-color: #4CAF50;
   color: white;
   border: none;
-  padding: 0.75rem 1.5rem;
   border-radius: 4px;
   cursor: pointer;
+  transition: background-color 0.3s;
 }
 
-.payment-test-container button:hover {
-  background: #008dd0;
+.btn-submit:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
 }
 
-.payment-test-container {
-    max-width: 600px;
-    margin: 0 auto;
-    padding: 20px;
-    background-color: #f4f4f4;
-    border-radius: 8px;
-  }
-  
-  .payment-form {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-  }
-  
-  .form-group {
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .form-group label {
-    margin-bottom: 5px;
-    font-weight: bold;
-  }
-  
-  .form-group input {
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-  }
-  
-  .btn-submit {
-    padding: 10px;
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-  }
-  
-  .error-section, .response-section {
-    margin-top: 20px;
-    background-color: #f8f8f8;
-    padding: 15px;
-    border-radius: 4px;
-  }
-  
-  .qr-code-section img {
-    max-width: 300px;
-    height: auto;
-  }
+.error-section {
+  margin-top: 20px;
+  padding: 15px;
+  background-color: #ffeeee;
+  border: 1px solid #ff0000;
+  border-radius: 4px;
+}
+
+.response-section {
+  margin-top: 20px;
+  padding: 15px;
+  background-color: #eeffee;
+  border: 1px solid #00ff00;
+  border-radius: 4px;
+}

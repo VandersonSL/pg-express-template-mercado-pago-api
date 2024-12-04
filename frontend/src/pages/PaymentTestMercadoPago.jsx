@@ -8,55 +8,95 @@ const PaymentTestMercadoPago = () => {
   });
 
   const [paymentResponse, setPaymentResponse] = useState(null);
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setPaymentData({
-      ...paymentData,
+    setPaymentData(prevState => ({
+      ...prevState,
       [name]: value
-    });
+    }));
   };
 
-  const handleSubmit = async (e) => {
+  const createPayment = async (e) => {
     e.preventDefault();
+    setLoading(true);
+    setError(null);
+    setPaymentResponse(null);
+
     try {
-      const response = await axios.post('/api/payment/create', paymentData);
+      const response = await axios.post('/api/payment/create', {
+        amount: parseFloat(paymentData.amount),
+        description: paymentData.description
+      });
+
       setPaymentResponse(response.data);
-      window.location.href = response.data.init_point;
-    } catch (error) {
-      console.error('Error creating payment preference:', error);
+    } catch (err) {
+      console.error('Erro no pagamento:', err);
+      setError({
+        message: err.response?.data?.message || 'Erro desconhecido',
+        details: err.response?.data || err.message
+      });
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="payment-test-container">
-      <h1>Payment Test</h1>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label>Amount:</label>
-          <input
-            type="number"
+    <div className="payment-container">
+      <h1>Teste de Pagamento Mercado Pago</h1>
+      
+      <form onSubmit={createPayment} className="payment-form">
+        <div className="form-group">
+          <label htmlFor="amount">Valor do Pagamento</label>
+          <input 
+            id="amount"
+            type="number" 
             name="amount"
             value={paymentData.amount}
             onChange={handleInputChange}
+            placeholder="Digite o valor"
+            min="1"
+            step="0.01"
             required
+            disabled={loading}
           />
         </div>
-        <div>
-          <label>Description:</label>
-          <input
+
+        <div className="form-group">
+          <label htmlFor="description">Descrição</label>
+          <input 
+            id="description"
             type="text"
             name="description"
             value={paymentData.description}
             onChange={handleInputChange}
-            required
+            placeholder="Descrição do pagamento"
+            disabled={loading}
           />
         </div>
-        <button type="submit">Generate Payment</button>
+
+        <button 
+          type="submit" 
+          className="btn-submit"
+          disabled={loading}
+        >
+          {loading ? 'Processando...' : 'Criar Pagamento'}
+        </button>
       </form>
+
+      {error && (
+        <div className="error-section">
+          <h3>Erro no Pagamento</h3>
+          <p>{error.message}</p>
+          <pre>{JSON.stringify(error.details, null, 2)}</pre>
+        </div>
+      )}
+
       {paymentResponse && (
-        <div>
-          <h2>Payment Response:</h2>
+        <div className="response-section">
+          <h3>Resposta do Pagamento</h3>
           <pre>{JSON.stringify(paymentResponse, null, 2)}</pre>
         </div>
       )}
