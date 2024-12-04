@@ -17,7 +17,7 @@ npm run dev
 ```
 
 3. Open your browser and navigate to:
-- Frontend: http://localhost:3000
-- Backend: http://localhost:3001
+- Frontend: http://localhost:3005
+- Backend: http://localhost:3006
 
 Make sure both servers are running for the application to work properly.
