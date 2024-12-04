@@ -1,16 +1,40 @@
-.payment-container {
-  max-width: 500px;
-  margin: 0 auto;
-  padding: 20px;
-  background-color: #f9f9f9;
-  border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+.bolt-payment-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #f4f4f4;
+  font-family: 'Inter', sans-serif;
 }
 
-.payment-form {
+.payment-card {
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+  padding: 30px;
+  width: 100%;
+  max-width: 450px;
+}
+
+.payment-header {
+  text-align: center;
+  margin-bottom: 25px;
+}
+
+.payment-header h2 {
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.payment-header p {
+  color: #666;
+  font-size: 14px;
+}
+
+.bolt-payment-form {
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 20px;
 }
 
 .form-group {
@@ -19,43 +43,62 @@
 }
 
 .form-group label {
-  margin-bottom: 5px;
-  font-weight: bold;
+  margin-bottom: 8px;
+  color: #333;
+  font-weight: 500;
 }
 
-.form-group input {
-  padding: 10px;
+.input-wrapper {
+  position: relative;
+}
+
+.currency-prefix {
+  position: absolute;
+  left: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #666;
+}
+
+.bolt-input, .bolt-select {
+  width: 100%;
+  padding: 12px 15px 12px 30px;
   border: 1px solid #ddd;
-  border-radius: 4px;
+  border-radius: 8px;
+  font-size: 16px;
+  transition: border-color 0.3s;
 }
 
-.btn-submit {
-  padding: 10px;
-  background-color: #4CAF50;
+.bolt-input:focus, .bolt-select:focus {
+  outline: none;
+  border-color: #4A90E2;
+}
+
+.bolt-button {
+  background-color: #4A90E2;
   color: white;
   border: none;
-  border-radius: 4px;
+  padding: 15px;
+  border-radius: 8px;
+  font-weight: 600;
   cursor: pointer;
   transition: background-color 0.3s;
 }
 
-.btn-submit:disabled {
-  background-color: #cccccc;
+.bolt-button:hover {
+  background-color: #357ABD;
+}
+
+.bolt-button:disabled {
+  background-color: #A0C4E8;
   cursor: not-allowed;
 }
 
-.error-section {
-  margin-top: 20px;
+.bolt-error {
+  background-color: #FFE5E5;
+  color: #D8000C;
   padding: 15px;
-  background-color: #ffeeee;
-  border: 1px solid #ff0000;
-  border-radius: 4px;
-}
-
-.response-section {
+  border-radius: 8px;
   margin-top: 20px;
-  padding: 15px;
-  background-color: #eeffee;
-  border: 1px solid #00ff00;
-  border-radius: 4px;
+  text-align: center;
 }
