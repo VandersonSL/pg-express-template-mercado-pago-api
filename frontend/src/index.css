@@ -1,28 +1,88 @@
 body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+}
+
+.payment-test-container {
+  max-width: 600px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.payment-test-container form div {
+  margin-bottom: 1rem;
+}
+
+.payment-test-container input {
+  width: 100%;
+  padding: 0.5rem;
+  margin-top: 0.25rem;
+}
+
+.payment-test-container button {
+  background: #009ee3;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.payment-test-container button:hover {
+  background: #008dd0;
+}
+
+.payment-test-container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f4f4f4;
+    border-radius: 8px;
+  }
+  
+  .payment-form {
     display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    background-color: #f0f0f0;
+    flex-direction: column;
+    gap: 15px;
   }
   
-  .App {
-    text-align: center;
-    background-color: white;
-    padding: 2rem;
-    border-radius: 10px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  .form-group {
+    display: flex;
+    flex-direction: column;
   }
   
-  .btn {
-    display: inline-block;
-    padding: 10px 20px;
-    background-color: #007bff;
+  .form-group label {
+    margin-bottom: 5px;
+    font-weight: bold;
+  }
+  
+  .form-group input {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  .btn-submit {
+    padding: 10px;
+    background-color: #4CAF50;
     color: white;
-    text-decoration: none;
-    border-radius: 5px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .error-section, .response-section {
     margin-top: 20px;
+    background-color: #f8f8f8;
+    padding: 15px;
+    border-radius: 4px;
+  }
+  
+  .qr-code-section img {
+    max-width: 300px;
+    height: auto;
   }
