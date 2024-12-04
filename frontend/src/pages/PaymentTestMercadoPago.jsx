@@ -1,15 +1,32 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
 const PaymentTestMercadoPago = () => {
   const [paymentData, setPaymentData] = useState({
     amount: '',
-    description: 'Teste de Pagamento Mercado Pago'
+    description: 'Teste de Pagamento Mercado Pago',
+    paymentMethod: '',
+    installments: 1
   });
 
+  const [paymentMethods, setPaymentMethods] = useState([]);
   const [paymentResponse, setPaymentResponse] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
+
+  // Fetch available payment methods
+  useEffect(() => {
+    const fetchPaymentMethods = async () => {
+      try {
+        const response = await axios.get('/api/payment-methods');
+        setPaymentMethods(response.data);
+      } catch (err) {
+        console.error('Erro ao buscar métodos de pagamento:', err);
+      }
+    };
+
+    fetchPaymentMethods();
+  }, []);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -27,8 +44,8 @@ const PaymentTestMercadoPago = () => {
 
     try {
       const response = await axios.post('/api/payment/create', {
-        amount: parseFloat(paymentData.amount),
-        description: paymentData.description
+        ...paymentData,
+        amount: parseFloat(paymentData.amount)
       });
 
       setPaymentResponse(response.data);
@@ -65,17 +82,40 @@ const PaymentTestMercadoPago = () => {
         </div>
 
         <div className="form-group">
-          <label htmlFor="description">Descrição</label>
-          <input 
-            id="description"
-            type="text"
-            name="description"
-            value={paymentData.description}
+          <label htmlFor="paymentMethod">Método de Pagamento</label>
+          <select
+            id="paymentMethod"
+            name="paymentMethod"
+            value={paymentData.paymentMethod}
             onChange={handleInputChange}
-            placeholder="Descrição do pagamento"
+            required
             disabled={loading}
-          />
+          >
+            <option value="">Selecione um método</option>
+            <option value="pix">PIX</option>
+            <option value="credit_card">Cartão de Crédito</option>
+            <option value="debit_card">Cartão de Débito</option>
+          </select>
         </div>
+
+        {paymentData.paymentMethod === 'credit_card' && (
+          <div className="form-group">
+            <label htmlFor="installments">Parcelas</label>
+            <select
+              id="installments"
+              name="installments"
+              value={paymentData.installments}
+              onChange={handleInputChange}
+              disabled={loading}
+            >
+              {[1, 2, 3, 6, 12].map(num => (
+                <option key={num} value={num}>
+                  {num} x {(paymentData.amount / num).toFixed(2)}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
 
         <button 
           type="submit" 
@@ -86,18 +126,28 @@ const PaymentTestMercadoPago = () => {
         </button>
       </form>
 
+      {paymentResponse && (
+        <div className="response-section">
+          <h3>Resposta do Pagamento</h3>
+          <pre>{JSON.stringify(paymentResponse, null, 2)}</pre>
+          
+          {paymentResponse.qr_code && (
+            <div className="qr-code-section">
+              <h4>QR Code PIX</h4>
+              <img 
+                src={`data:image/png;base64,${paymentResponse.qr_code}`} 
+                alt="QR Code PIX" 
+              />
+            </div>
+          )}
+        </div>
+      )}
+
       {error && (
         <div className="error-section">
           <h3>Erro no Pagamento</h3>
           <p>{error.message}</p>
           <pre>{JSON.stringify(error.details, null, 2)}</pre>
-        </div>
-      )}
-
-      {paymentResponse && (
-        <div className="response-section">
-          <h3>Resposta do Pagamento</h3>
-          <pre>{JSON.stringify(paymentResponse, null, 2)}</pre>
         </div>
       )}
     </div>

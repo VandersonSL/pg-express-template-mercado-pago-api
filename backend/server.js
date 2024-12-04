@@ -1,57 +1,72 @@
 const express = require('express');
+const mercadopago = require('mercadopago');
 const cors = require('cors');
-const dotenv = require('dotenv');
-const paymentRoutes = require('./routes/payment');
-
-// Suppress specific deprecation warnings
-process.env.NODE_OPTIONS = '--no-deprecation';
-
-// Load environment variables
-dotenv.config();
+require('dotenv').config();
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = 5000;
 
-// Enhanced CORS configuration
-const corsOptions = {
-  origin: ['http://localhost:3000', 'http://localhost:5173'], // Add your frontend URLs
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization']
-};
+mercadopago.configure({
+  access_token: process.env.MERCADO_PAGO_ACCESS_TOKEN
+});
 
-// Middleware
-app.use(cors(corsOptions));
+app.use(cors());
 app.use(express.json());
 
-// Logging middleware
-app.use((req, res, next) => {
-  console.log(`[${new Date().toISOString()}] ${req.method} ${req.path}`);
-  next();
+app.post('/api/payment/create', async (req, res) => {
+  try {
+    const { 
+      amount, 
+      description, 
+      paymentMethod, 
+      installments 
+    } = req.body;
+
+    const paymentData = {
+      transaction_amount: Number(amount),
+      description: description,
+      payment_method_id: paymentMethod,
+      payer: {
+        email: 'test@test.com'
+      }
+    };
+
+    // Add installments for credit card
+    if (paymentMethod === 'credit_card' && installments) {
+      paymentData.installments = Number(installments);
+    }
+
+    const payment = await mercadopago.payment.create(paymentData);
+
+    res.json({
+      id: payment.body.id,
+      status: payment.body.status,
+      detail: payment.body,
+      qr_code: payment.body.point_of_interaction?.transaction_data?.qr_code,
+      payment_method: paymentMethod
+    });
+  } catch (error) {
+    console.error('Payment Error:', error);
+    res.status(500).json({ 
+      message: 'Erro ao criar pagamento', 
+      error: error.message 
+    });
+  }
 });
 
-// Routes
-app.use('/api/payment', paymentRoutes);
-
-// Global error handler
-app.use((err, req, res, next) => {
-  console.error('Unhandled Error:', err);
-  res.status(500).json({
-    error: 'Internal Server Error',
-    message: err.message
-  });
+// Get payment methods
+app.get('/api/payment-methods', async (req, res) => {
+  try {
+    const paymentMethods = await mercadopago.payment_methods.findAll();
+    res.json(paymentMethods);
+  } catch (error) {
+    res.status(500).json({ 
+      message: 'Erro ao buscar métodos de pagamento', 
+      error: error.message 
+    });
+  }
 });
 
-// Start server with enhanced logging
-const server = app.listen(PORT, () => {
-  console.log(`🚀 Backend server running on port ${PORT}`);
-  console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
-});
-
-// Graceful shutdown
-process.on('SIGINT', () => {
-  console.log('🛑 Server is shutting down...');
-  server.close(() => {
-    console.log('💤 Server stopped');
-    process.exit(0);
-  });
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });
